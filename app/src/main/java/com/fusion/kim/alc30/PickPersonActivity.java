@@ -1,5 +1,7 @@
 package com.fusion.kim.alc30;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,12 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PickPersonActivity extends AppCompatActivity {
 
@@ -49,7 +58,7 @@ public class PickPersonActivity extends AppCompatActivity {
 
         mLoadingPb.setVisibility(View.VISIBLE);
 
-        Query query = mUsersRef.limitToLast(50);
+        Query query = mUsersRef.limitToLast(50).orderByChild("userName");
 
         FirebaseRecyclerOptions<People> options =
                 new FirebaseRecyclerOptions.Builder<People>()
@@ -59,10 +68,53 @@ public class PickPersonActivity extends AppCompatActivity {
 
         FirebaseRecyclerAdapter<People, PeopleViewHolder>  adapter = new FirebaseRecyclerAdapter<People, PeopleViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull PeopleViewHolder holder, int position, @NonNull People model) {
+            protected void onBindViewHolder(@NonNull PeopleViewHolder holder, final int position, @NonNull People model) {
 
                 holder.mUserNameTv.setText(model.getUserName());
                 mLoadingPb.setVisibility(View.GONE);
+
+                holder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        final ProgressDialog progressDialog = new ProgressDialog(PickPersonActivity.this);
+                        progressDialog.setCancelable(false);
+                        progressDialog.setMessage("Sending...");
+                        progressDialog.show();
+
+                        Map messageMap = new HashMap();
+                        messageMap.put("message", getIntent().getStringExtra("message"));
+                        messageMap.put("secretKey", "default");
+                        messageMap.put("sender", FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                        FirebaseDatabase.getInstance().getReference().child("Messages")
+                                .child(getRef(position).getKey()).push()
+                                .setValue(messageMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                                if (task.isSuccessful()){
+
+                                    progressDialog.dismiss();
+
+                                    startActivity(new Intent(PickPersonActivity.this, MainActivity.class));
+                                    finish();
+
+                                    Toast.makeText(PickPersonActivity.this, "Sent", Toast.LENGTH_LONG).show();
+
+                                } else {
+
+                                    progressDialog.dismiss();
+
+                                    Toast.makeText(PickPersonActivity.this, "Failed to send try again", Toast.LENGTH_SHORT).show();
+
+                                }
+
+                            }
+                        });
+
+                    }
+                });
 
             }
 
