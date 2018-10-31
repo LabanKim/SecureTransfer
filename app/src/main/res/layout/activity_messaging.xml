@@ -1,9 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MessagingActivity">
+    tools:context=".MessagingActivity"
+    android:background="@drawable/lake_back">
 
-</android.support.constraint.ConstraintLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/rel_lay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorTransparentBlack"
+            android:layout_margin="16dp">
+
+            <TextView
+                android:id="@+id/tv_message_sender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                tools:text="Sender: Laban"
+                android:layout_margin="16sp"/>
+
+            <TextView
+                android:id="@+id/tv_text_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:text="Message:"
+                android:layout_margin="16sp"
+                android:layout_below="@+id/tv_message_sender"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp"
+                android:layout_below="@+id/tv_text_header"
+                android:background="@android:color/white"/>
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_text_header">
+
+                <TextView
+                    android:id="@+id/tv_message_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:text="Instead of storing a cookie value in the HTTP header of a request, the URL is rewritten to include a session parameter. URL rewriting might avoid cookies but it share the same set of potential problems just mentioned above. Plus, with URL rewriting there are no static URLs in your Web-Enabled application, which often makes caching and indexing more difficult. Finally, every Web page needs to be dynamically generated so all hyperlinks include the session parameter."
+                    android:layout_marginHorizontal="16sp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="25dp"
+                    />
+
+            </android.support.v4.widget.NestedScrollView>
+
+
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btn_reply"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_shape"
+            android:text="Reply"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/rel_lay"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"/>
+
+    </RelativeLayout>
+
+
+
+</android.support.v4.widget.NestedScrollView>

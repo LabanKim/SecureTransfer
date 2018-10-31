@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar mLoadingPb;
 
+    String sender = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,7 +134,9 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                holder.mNameTv.setText(dataSnapshot.child("userName").getValue(String.class));
+                                sender = dataSnapshot.child("userName").getValue(String.class);
+
+                                holder.mNameTv.setText(sender);
 
                             }
 
@@ -141,6 +145,20 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         });
+
+                holder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent messagingIntent = new Intent(MainActivity.this, MessagingActivity.class);
+                        messagingIntent.putExtra("message", model.getMessage());
+                        messagingIntent.putExtra("senderName", sender);
+                        messagingIntent.putExtra("senderID", model.getMessage());
+                        startActivity(messagingIntent);
+
+                    }
+                });
+
 
                 mLoadingPb.setVisibility(View.GONE);
 
